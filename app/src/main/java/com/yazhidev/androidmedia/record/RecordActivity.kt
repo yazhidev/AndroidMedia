@@ -1,69 +1,56 @@
 package com.yazhidev.androidmedia.record
 
-import android.media.AudioFormat
-import android.media.AudioTrack
+import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.support.v7.app.AppCompatActivity
+import android.text.TextUtils
 import com.yazhidev.androidmedia.R
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
+import com.yazhidev.androidmedia.pcm.PCMPlayer
+import com.yazhidev.androidmedia.pcm.PCMRecorder
+import com.yazhidev.androidmedia.utils.LibFileUtils
 import kotlinx.android.synthetic.main.activity_record.*
-import java.io.File
-import java.io.FileInputStream
+import java.util.*
+
 
 class RecordActivity : AppCompatActivity() {
 
-    private var mAudioTrack: AudioTrack? = null
-    private var mEnd = false
+    private val pcmPlayer by lazy { PCMPlayer() }
+    private val pcmRecoder by lazy { PCMRecorder() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_record)
 
         playBtm.setOnClickListener {
-            if (mAudioTrack == null) {
-                mAudioTrack = createAudioTrack()
-                        .apply {
-                            play()
-                            val pcmFilePath = "${Environment.getExternalStorageDirectory()}/16k.pcm"
-                            val inputStream = FileInputStream(File(pcmFilePath))
-                            val buffer = ByteArray(bufferSizeInFrames)
-                            var len = 0
-                            Observable.just(inputStream)
-                                    .subscribeOn(Schedulers.io())
-                                    .subscribe {
-                                        it.use { input ->
-                                            while ((input.read(buffer, 0, buffer.size).apply { len = this }) > 0 && !mEnd) {
-                                                write(buffer, 0, len)
-                                            }
-                                        }
-                                    }
-                        }
-            }
+            //选择 PCM 文件
+            LibFileUtils.pickFile(this)
+        }
+
+        recordBtm.setOnClickListener {
+            //开始录制
+            val path = "${Environment.getExternalStorageDirectory()}/${Date().time}.pcm"
+            pcmRecoder.startRecord(path)
+        }
+
+        endRecordBtm.setOnClickListener {
+            //结束录制
+            pcmRecoder.stopRecord()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val path = LibFileUtils.handlePickFileResult(this, requestCode, resultCode, data)
+        if(!TextUtils.isEmpty(path)) {
+            pcmPlayer.createAudioTrack(44100)
+            pcmPlayer.playPcm(path)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mAudioTrack?.apply {
-            mEnd = true
-            pause()
-            flush()
-            release()
-        }
+        pcmPlayer.destroy()
+        pcmRecoder.stopRecord()
     }
-
-    private fun createAudioTrack(): AudioTrack {
-        val format = AudioFormat.Builder()
-                .setChannelMask(AudioFormat.CHANNEL_OUT_STEREO)
-                .setSampleRate(44100)
-                .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                .build()
-
-        return AudioTrack.Builder()
-                .setAudioFormat(format)
-                .build()
-    }
-
 }

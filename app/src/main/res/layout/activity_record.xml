@@ -13,4 +13,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+    <Button
+        android:id="@+id/recordBtm"
+        android:text="录制pcm音频"
+        app:layout_constraintTop_toBottomOf="@+id/playBtm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/endRecordBtm"
+        android:text="结束录制"
+        app:layout_constraintTop_toBottomOf="@+id/playBtm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </android.support.constraint.ConstraintLayout>
