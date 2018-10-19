@@ -1,0 +1,41 @@
+gradle.properties.bak
+gradle.properties.opz
+local.properties
+app/*.log
+*.apk
+app/gradlew.bat
+app/gradlew
+app/gradle/wrapper/gradle-wrapper.properties
+tools/META-INF
+tools/channel
+.DS_Store
+node_modules
+
+# OSX
+.DS_Store
+
+# Android/IntelliJ
+#
+*.iml
+.idea
+.gradle
+local.properties
+
+captures/
+
+# node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# BUCK
+buck-out/
+\.buckd/
+android/app/libs
+android/keystores/debug.keystore
+
+freeline*
+
+aarfiles/
+
+build/
