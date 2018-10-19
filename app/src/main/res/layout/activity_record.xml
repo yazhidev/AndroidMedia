@@ -23,7 +23,7 @@
     <Button
         android:id="@+id/endRecordBtm"
         android:text="结束录制"
-        app:layout_constraintTop_toBottomOf="@+id/playBtm"
+        app:layout_constraintTop_toBottomOf="@+id/recordBtm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

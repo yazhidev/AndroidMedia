@@ -16,7 +16,7 @@ import java.util.*
 class RecordActivity : AppCompatActivity() {
 
     private val pcmPlayer by lazy { PCMPlayer() }
-    private val pcmRecoder by lazy { PCMRecorder() }
+    private val pcmRecorder by lazy { PCMRecorder() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,12 +30,12 @@ class RecordActivity : AppCompatActivity() {
         recordBtm.setOnClickListener {
             //开始录制
             val path = "${Environment.getExternalStorageDirectory()}/${Date().time}.pcm"
-            pcmRecoder.startRecord(path)
+            pcmRecorder.startRecord(path)
         }
 
         endRecordBtm.setOnClickListener {
             //结束录制
-            pcmRecoder.stopRecord()
+            pcmRecorder.stopRecord()
         }
     }
 
@@ -51,6 +51,6 @@ class RecordActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         pcmPlayer.destroy()
-        pcmRecoder.stopRecord()
+        pcmRecorder.stopRecord()
     }
 }

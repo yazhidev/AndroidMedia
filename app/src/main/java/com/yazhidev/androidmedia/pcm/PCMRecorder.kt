@@ -34,7 +34,7 @@ class PCMRecorder(sampleRate: Int = 44100) {
         mRecorder?.apply {
             val outputStream = FileOutputStream(File(path))
             val buffer = ByteArray(bufferSizeInFrames)
-            LibToastUtils.showToast("开始录制！路径：${path}")
+            LibToastUtils.showToast("开始录制")
             startRecording()
             mRecording = true
             Observable.just(outputStream)
@@ -47,6 +47,7 @@ class PCMRecorder(sampleRate: Int = 44100) {
                                     output.write(buffer)
                                 }
                             }
+                            LibToastUtils.showToast("已结束录制，保存路径：${path}")
                             stop()
                             release()
                             mRecorder = null
