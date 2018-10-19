@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         requestPermission()
 
-        recordBtn.setOnClickListener { startActivity(Intent(this, RecordActivity::class.java)) }
+        playPCM.setOnClickListener { startActivity(Intent(this, RecordActivity::class.java)) }
     }
 
     private fun requestPermission() {

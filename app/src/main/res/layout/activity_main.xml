@@ -8,10 +8,10 @@
     tools:context="com.yazhidev.androidmedia.MainActivity">
 
     <Button
-        android:id="@+id/recordBtn"
+        android:id="@+id/playPCM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="录制 MP3"
+        android:text="播放PCM数据"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
