@@ -37,6 +37,9 @@ class RecordActivity : AppCompatActivity() {
             //结束录制
             pcmRecorder.stopRecord()
         }
+
+        val data = byteArrayOf(10, 15, 20, 44, 1, 3, 13, 59, 98, 12, 51, 5, 13, 15, 10)
+        spectrumView.setData(data)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
