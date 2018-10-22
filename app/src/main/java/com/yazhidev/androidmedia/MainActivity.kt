@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
         RxPermissions(this)
                 .request(Manifest.permission.CAMERA,
                         Manifest.permission.RECORD_AUDIO,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.READ_EXTERNAL_STORAGE)
                 .subscribe({ granted ->
                     if (granted) {
