@@ -18,11 +18,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class DecoderUtils {
 
-    public static WaveHeader readWavHeader(String wavFilePath) {
-        if (!wavFilePath.contains(".wav")) {
-            LibToastUtils.showToast("请选择 wav 文件!");
-            return null;
-        }
+    public static void readWavHeader(String wavFilePath, final ReadWaveHeaderCallback callback) {
         Observable.just(wavFilePath)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Consumer<String>() {
@@ -30,37 +26,66 @@ public class DecoderUtils {
                     public void accept(String s) throws Exception {
                         FileInputStream fileInputStream = new FileInputStream(new File(s));
                         BufferedInputStream dis = new BufferedInputStream(fileInputStream);
-//                        DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(new File(s))));
-                        String s1 = readString(dis, 4);
-                        int i = readInt(dis);
-                        String s2 = readString(dis, 4);
-                        String s3 = readString(dis, 4);
-                        int i1 = readInt(dis);
-                        short i2 = readShort(dis); // typeW
+                        WaveHeader.Builder builder = new WaveHeader.Builder()
+                                .setRiff(readString(dis, 4))
+                                .setTotalLength(readInt(dis))
+                                .setWave(readString(dis, 4))
+                                .setFmt(readString(dis, 4))
+                                .setTransition(readInt(dis))
+                                .setType(readShort(dis))
+                                .setChannelMask(readShort(dis))
+                                .setSampleRate(readInt(dis))
+                                .setRate(readInt(dis))
+                                .setSampleLength(readShort(dis))
+                                .setDeepness(readShort(dis));
+                        int loopCount = 0;
+                        while (loopCount < 100 && !(readString(dis, 2).equals("da") && readString(dis, 2).equals("ta"))) {
+                            //再往后读100字节，忽略非标准格式数据，直到查找到“data”字符串
+                            loopCount++;
+                        }
+                        if (loopCount < 100) {
+                            builder.setData("data");
+                            builder.setDataLength(readInt(dis));
+                        }
+                        WaveHeader header = builder.build();
+                        dis.close();
                         fileInputStream.close();
+
+                        if (!"riff".equalsIgnoreCase(header.getRiff())
+                                || !"wave".equalsIgnoreCase(header.getWave())
+                                || !"fmt ".equalsIgnoreCase(header.getFmt())
+                                || !"data".equalsIgnoreCase(header.getData())) {
+                            //无效header
+                            if (callback != null) {
+                                callback.onFailure("无效的wav文件");
+                            }
+                        } else {
+                            if (callback != null) {
+                                callback.onSuc(header);
+                            }
+                        }
                     }
                 });
-        return null;
     }
 
     private static String readString(InputStream inputStream, int length) {
         byte[] bytes = new byte[length];
         try {
             inputStream.read(bytes);
-            return new String(bytes);
+            String s = new String(bytes);
+            return s;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
-    }aa
-
+    }
 
     private static short readShort(InputStream inputStream) {
         byte[] bytes = new byte[2];
         try {
             inputStream.read(bytes);
             //{1, 0}
-            return (short) (bytes[0] | (bytes[1] << 8));
+            return (short) ((bytes[0] & 0xff) | ((bytes[1] & 0xff) << 8));
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
@@ -71,19 +96,11 @@ public class DecoderUtils {
         byte[] bytes = new byte[4];
         try {
             inputStream.read(bytes);
-//            byte[] reverse = reverse(bytes);
-            return (int) (bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24));
+            return (int) ((bytes[0] & 0xff) | ((bytes[1] & 0xff) << 8) | ((bytes[2] & 0xff) << 16) | ((bytes[3] & 0xff) << 24));
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
         }
     }
 
-    private static byte[] reverse(byte[] original) {
-        byte[] result = new byte[original.length];
-        for (int i = 0; i < original.length; i++) {
-            result[i] = original[original.length - 1 - i];
-        }
-        return result;
-    }
 }

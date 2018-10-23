@@ -22,16 +22,20 @@ class PCMPlayer {
         createAudioTrack()
     }
 
-    fun createAudioTrack(sampleRate: Int = 44100) {
+    /**
+     * channel 暂只支持单声道和双声道
+     * deepness 暂只支持8位和16位
+     */
+    fun createAudioTrack(sampleRate: Int = 44100, channel: Int = 2, deepness: Int = 16) {
         mAudioTrack?.apply {
             destroy()
         }
 
         mEnd = false
         val format = AudioFormat.Builder()
-                .setChannelMask(AudioFormat.CHANNEL_OUT_STEREO)
+                .setChannelMask(if (channel == 2) AudioFormat.CHANNEL_OUT_STEREO else AudioFormat.CHANNEL_IN_DEFAULT)
                 .setSampleRate(sampleRate)
-                .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                .setEncoding(if (deepness == 16) AudioFormat.ENCODING_PCM_16BIT else AudioFormat.ENCODING_PCM_8BIT)
                 .build()
 
         mAudioTrack = AudioTrack.Builder()
@@ -39,7 +43,10 @@ class PCMPlayer {
                 .build()
     }
 
-    fun playPcm(pcmFilePath: String) {
+    /**
+     * 可跳过头部 from 个字节，用于播放 WAV 格式音频
+     */
+    fun playPcm(pcmFilePath: String, from: Int) {
         if (mAudioTrack == null) {
             throw IllegalStateException("AudioTrack not found, forget createAudioTrack ?")
         }
@@ -52,12 +59,18 @@ class PCMPlayer {
                     .subscribeOn(Schedulers.io())
                     .subscribe {
                         it.use { input ->
+                            var indexFrom = from
                             while ((input.read(buffer, 0, buffer.size).apply { len = this }) > 0 && !mEnd) {
-                                write(buffer, 0, len)
+                                write(buffer, indexFrom, len - indexFrom)
+                                indexFrom = 0
                             }
                         }
                     }
         }
+    }
+
+    fun playPcm(pcmFilePath: String) {
+        playPcm(pcmFilePath, 0)
     }
 
     fun destroy() {

@@ -5,10 +5,10 @@ package com.yazhidev.androidmedia.utils.bean;
  */
 
 public class WaveHeader {
-    private String riff = "RIFF";
+    private String riff; // "RIFF"
     private int totalLength; //音频 data 数据长度 + 44 -8
-    private String wave = "WAVE";
-    private String fmt = "fmt ";
+    private String wave; // "WAVE"
+    private String fmt; // "fmt "
     private int transition = 0x00000010;
     private short type; // PCM：1
     private short channelMask; // 单声道：1，双声道：2
@@ -16,8 +16,8 @@ public class WaveHeader {
     private int rate;  // 波形音频数据传送速率，其值为通道数×每秒数据位数×每样本的数据位数／8
     private short sampleLength; // 每个采样需要的字节数，其值为通道数×位深度／8
     private short deepness; //位深度
-    private String data = "DATA";
-    private int dataLength; //DATA数据长度
+    private String data; // "data"
+    private int dataLength; //data数据长度
 
     private WaveHeader(String riff, int totalLength, String wave, String fmt, int transition, short type, short channelMask, int sampleRate, int rate, short sampleLength, short deepness, String data, int dataLength) {
         this.riff = riff;
@@ -88,20 +88,19 @@ public class WaveHeader {
     }
 
     public static class Builder {
-        private String riff = "RIFF";
+        private String riff; // "RIFF"
         private int totalLength; //音频 data 数据长度 + 44 -8
-        private String wave = "WAVE";
-        private String fmt = "fmt ";
+        private String wave; // "WAVE"
+        private String fmt; // "fmt "
         private int transition = 0x00000010;
         private short type; // PCM：1
         private short channelMask; // 单声道：1，双声道：2
         private int sampleRate; //采样率
-        private int encoding;
         private int rate;  // 波形音频数据传送速率，其值为通道数×每秒数据位数×每样本的数据位数／8
         private short sampleLength; // 每个采样需要的字节数，其值为通道数×位深度／8
         private short deepness; //位深度
-        private String data = "DATA";
-        private int dataLength; //DATA数据长度
+        private String data; // "data"
+        private int dataLength; //data数据长度
 
         public Builder setRiff(String riff) {
             this.riff = riff;
