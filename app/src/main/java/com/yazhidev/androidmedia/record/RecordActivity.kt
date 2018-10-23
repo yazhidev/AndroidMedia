@@ -8,6 +8,7 @@ import android.text.TextUtils
 import com.yazhidev.androidmedia.R
 import com.yazhidev.androidmedia.pcm.PCMPlayer
 import com.yazhidev.androidmedia.pcm.PCMRecorder
+import com.yazhidev.androidmedia.utils.DecoderUtils
 import com.yazhidev.androidmedia.utils.LibFileUtils
 import kotlinx.android.synthetic.main.activity_record.*
 import java.util.*
@@ -17,25 +18,36 @@ class RecordActivity : AppCompatActivity() {
 
     private val pcmPlayer by lazy { PCMPlayer() }
     private val pcmRecorder by lazy { PCMRecorder() }
+    private var type = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_record)
 
-        playBtm.setOnClickListener {
+        playBtn.setOnClickListener {
             //选择 PCM 文件
+            type = 0
             LibFileUtils.pickFile(this)
         }
 
-        recordBtm.setOnClickListener {
+        recordBtn.setOnClickListener {
             //开始录制
             val path = "${Environment.getExternalStorageDirectory()}/${Date().time}.pcm"
             pcmRecorder.startRecord(path)
         }
 
-        endRecordBtm.setOnClickListener {
+        endRecordBtn.setOnClickListener {
             //结束录制
             pcmRecorder.stopRecord()
+        }
+
+        readWaveBtn.setOnClickListener {
+            //选择文件
+//            type = 1
+//            LibFileUtils.pickFile(this)l;j ？     w`w
+            val path = "${Environment.getExternalStorageDirectory()}/hurt.wav"
+            DecoderUtils.readWavHeader(path)
+
         }
 
         val data = byteArrayOf(10, 15, 20, 44, 1, 3, 13, 59, 98, 12, 51, 5, 13, 15, 10)
@@ -46,8 +58,12 @@ class RecordActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         val path = LibFileUtils.handlePickFileResult(this, requestCode, resultCode, data)
         if(!TextUtils.isEmpty(path)) {
-            pcmPlayer.createAudioTrack(44100)
-            pcmPlayer.playPcm(path)
+            if(type == 0) {
+                pcmPlayer.createAudioTrack(44100)
+                pcmPlayer.playPcm(path)
+            } else if(type == 1) {
+                DecoderUtils.readWavHeader(path)
+            }
         }
     }
 

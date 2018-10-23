@@ -8,22 +8,29 @@
     tools:context="com.yazhidev.androidmedia.record.RecordActivity">
 
     <Button
-        android:id="@+id/playBtm"
+        android:id="@+id/playBtn"
         android:text="播放本地pcm音频"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/recordBtm"
+        android:id="@+id/recordBtn"
         android:text="录制pcm音频"
-        app:layout_constraintTop_toBottomOf="@+id/playBtm"
+        app:layout_constraintTop_toBottomOf="@+id/playBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/endRecordBtm"
+        android:id="@+id/endRecordBtn"
         android:text="结束录制"
-        app:layout_constraintTop_toBottomOf="@+id/recordBtm"
+        app:layout_constraintTop_toBottomOf="@+id/recordBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/readWaveBtn"
+        android:text="读取 WAV 头"
+        app:layout_constraintTop_toBottomOf="@+id/endRecordBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -33,7 +40,7 @@
         android:layout_height="200dp"
         android:background="#dddddd"
         android:layout_margin="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/endRecordBtm"
+        app:layout_constraintTop_toBottomOf="@+id/readWaveBtn"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"/>
 
