@@ -9,7 +9,7 @@ public class WaveHeader {
     private int totalLength; //音频 data 数据长度 + 44 -8
     private String wave; // "WAVE"
     private String fmt; // "fmt "
-    private int transition = 0x00000010;
+    private int transition; //过渡字节，一般为0x00000010
     private short type; // PCM：1
     private short channelMask; // 单声道：1，双声道：2
     private int sampleRate; //采样率

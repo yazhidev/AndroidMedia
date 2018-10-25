@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
@@ -72,8 +73,7 @@ public class DecoderUtils {
         byte[] bytes = new byte[length];
         try {
             inputStream.read(bytes);
-            String s = new String(bytes);
-            return s;
+            return new String(bytes);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -101,6 +101,18 @@ public class DecoderUtils {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    /**
+     *  byte 转二进制
+     * @param bytes
+     * @param radix 2：二进制
+     * @return 二进制（补码）
+     */
+    public static String binary(byte bytes, int radix){
+        byte[] bytes1 = new byte[1];
+        bytes1[0] = bytes;
+        return new BigInteger(1, bytes1).toString(radix);// 这里的1代表正数
     }
 
 }
