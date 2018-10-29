@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.tbruyelle.rxpermissions2.RxPermissions
+import com.yazhidev.androidmedia.opengles.OpenGLESActivity
 import com.yazhidev.androidmedia.record.RecordActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -17,6 +18,9 @@ class MainActivity : AppCompatActivity() {
         requestPermission()
 
         playPCM.setOnClickListener { startActivity(Intent(this, RecordActivity::class.java)) }
+
+        gotoOpenGLES.setOnClickListener { startActivity(Intent(this, OpenGLESActivity::class.java))  }
+
     }
 
     private fun requestPermission() {
